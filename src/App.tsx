@@ -1,25 +1,20 @@
+import Modal from "@mui/material/Modal";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ButtonPrimary from "./components/cta/ButtonPrimary";
 import View from "./components/layout/View";
-import Modal from "@mui/material/Modal";
-import styled from "styled-components";
-import axios from "axios";
 
 interface Tree {
-  folders: Folder[];
+  name: string;
+  id: string;
+  parentFolderId: string;
+  folders: Tree[];
   files: File[];
 }
 
 interface File {
   name: string;
   id: string;
-}
-
-interface Folder {
-  folders: Folder[];
-  name: string;
-  id: string;
-  files: File;
 }
 
 function App() {
@@ -30,17 +25,15 @@ function App() {
 
   const dataUrl = "https://api-dev.reo.so/api/folderStructure";
 
-  const [folderStructure, setFolderStructure] = useState<Tree>();
+  const [tree, setTree] = useState<Tree>();
 
   useEffect(() => {
     axios.get(dataUrl).then((response) => {
-      setFolderStructure(response.data);
+      setTree(response.data);
     });
   }, []);
-
-  if (!folderStructure) return null;
-
-  console.log(folderStructure.folders[1].folders);
+  // TODO: add error state management for axios get
+  if (!tree) return null;
 
   return (
     <View
@@ -54,14 +47,7 @@ function App() {
       <ButtonPrimary onClick={handleOpenModal} label="Select Files" />
       <Modal open={showModal} onClose={handleCloseModal} hideBackdrop={true}>
         <View style={style}>
-          {/* <h4>{JSON.stringify(folderStructure)}</h4> */}
-          {/* <Tree data={structure} />s */}
-          {folderStructure.folders.map((folder) => {
-            return <h1 key={folder.id}>{folder.name}</h1>;
-          })}
-          {folderStructure.files.map((file) => {
-            return <h1 key={file.id}>{file.name}</h1>;
-          })}
+          <TreeView {...tree} />;
           <ButtonPrimary onClick={handleCloseModal} label="Close" />
         </View>
       </Modal>
@@ -69,85 +55,35 @@ function App() {
   );
 }
 
-// const TreeRecursive = ({ data }) => {
-//   // loop through the data
-//   return data.map((item) => {
-//     // if its a file render <File />
-//     if (item.type === "file") {
-//       return <File {item.name} />;
-//     }
-//     // if its a folder render <Folder />
-//     if (item.type === "folder") {
-//       return (
-//         <Folder name={item.name}>
-//           {/* Call the <TreeRecursive /> component with the current item.childrens */}
-//           <TreeRecursive data={item.childrens} />
-//         </Folder>
-//       );
-//     }
-//   });
-// };
-
-// const Collapsible = styled.div`
-//   /* set the height depending on isOpen prop */
-//   height: ${(isOpen) => (isOpen ? "auto" : "0")};
-//   /* hide the excess content */
-//   overflow: hidden;
-// `;
-
-// const StyledFolder = styled.div`
-//   padding-left: 20px;
-
-//   .folder--label {
-//     display: flex;
-//     align-items: center;
-//     span {
-//       margin-left: 5px;
-//     }
-//   }
-// `;
-
-// const Folder = (name: string, children: React.ReactNode) => {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   const handleToggle = (e: any) => {
-//     e.preventDefault();
-//     setIsOpen(!isOpen);
-//   };
-//   return (
-//     <StyledFolder>
-//       <div className="folder--label" onClick={handleToggle}>
-//         <span>{name}</span>
-//       </div>
-//       <Collapsible isOpen={isOpen}>{children}</Collapsible>
-//     </StyledFolder>
-//   );
-// };
-
-function Tree(children: React.ReactNode) {
-  return <StyledTree>{children}</StyledTree>;
-}
-
-const StyledTree = styled.div`
-  line-height: 1.5;
-`;
-
-function File(name: string) {
+function TreeView(tree: Tree) {
   return (
-    <StyledFile>
-      <h1>{name}</h1>
-    </StyledFile>
+    <View>
+      {tree.folders.map((folder) => {
+        return <Folder key={folder.id} {...folder} />;
+      })}
+      {tree.files.map((file) => {
+        return <File key={file.id} {...file} />;
+      })}
+    </View>
   );
 }
 
-const StyledFile = styled.div`
-  padding-left: 20px;
-  display: flex;
-  align-items: center;
-  span {
-    margin-left: 5px;
-  }
-`;
+function Folder(folder: Tree) {
+  const [showChildren, setShowChildren] = useState(false);
+  return (
+    <View>
+      <h1 onClick={() => setShowChildren(!showChildren)}>{folder.name}</h1>
+      {showChildren && <TreeView {...folder} />}
+    </View>
+  );
+}
+function File(file: File) {
+  return (
+    <View>
+      <h1>{file.name}</h1>
+    </View>
+  );
+}
 
 const style = {
   position: "absolute" as "absolute",
@@ -161,9 +97,4 @@ const style = {
   boxShadow: "5px 5px 25px rgba(0, 0, 0, 0.1)",
 };
 
-function FileSelector() {
-  return (
-    <View style={{ width: 500, height: 500, backgroundColor: "red" }}></View>
-  );
-}
 export default App;
