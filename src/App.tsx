@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import ButtonPrimary from "./components/cta/ButtonPrimary";
 import View from "./components/layout/View";
 
-interface Tree {
+interface Folder {
   name: string;
   id: string;
   parentFolderId: string;
-  folders: Tree[];
+  folders: Folder[];
   files: File[];
 }
 
@@ -20,20 +20,29 @@ interface File {
 function App() {
   const [showModal, setShowModal] = useState(false);
 
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
-
   const dataUrl = "https://api-dev.reo.so/api/folderStructure";
 
-  const [tree, setTree] = useState<Tree>();
+  const [rootFolder, setRootFolder] = useState<Folder>();
+  const [currentFolder, setCurrentFolder] = useState<Folder>();
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setCurrentFolder(rootFolder);
+  };
 
   useEffect(() => {
     axios.get(dataUrl).then((response) => {
-      setTree(response.data);
+      setRootFolder(response.data);
+      setCurrentFolder(rootFolder);
     });
   }, []);
   // TODO: add error state management for axios get
-  if (!tree) return null;
+
+  function handleChange(selectedFolder: Folder) {
+    setCurrentFolder(selectedFolder);
+    console.log(selectedFolder);
+  }
 
   return (
     <View
@@ -47,7 +56,8 @@ function App() {
       <ButtonPrimary onClick={handleOpenModal} label="Select Files" />
       <Modal open={showModal} onClose={handleCloseModal} hideBackdrop={true}>
         <View style={style}>
-          <TreeView {...tree} />;
+          <h1>{currentFolder?.name}</h1>
+          <FolderView folder={currentFolder} onChange={handleChange} />
           <ButtonPrimary onClick={handleCloseModal} label="Close" />
         </View>
       </Modal>
@@ -55,28 +65,26 @@ function App() {
   );
 }
 
-function TreeView(tree: Tree) {
+function FolderView(props: {
+  folder: Folder | undefined;
+  onChange: (selectedFolder: Folder) => void;
+}) {
   return (
     <View>
-      {tree.folders.map((folder) => {
-        return <Folder key={folder.id} {...folder} />;
+      {props.folder?.folders.map((folder) => {
+        return (
+          <h1 onClick={() => props.onChange(folder)} key={folder.id}>
+            {folder.name}
+          </h1>
+        );
       })}
-      {tree.files.map((file) => {
+      {props.folder?.files.map((file) => {
         return <File key={file.id} {...file} />;
       })}
     </View>
   );
 }
 
-function Folder(folder: Tree) {
-  const [showChildren, setShowChildren] = useState(false);
-  return (
-    <View>
-      <h1 onClick={() => setShowChildren(!showChildren)}>{folder.name}</h1>
-      {showChildren && <TreeView {...folder} />}
-    </View>
-  );
-}
 function File(file: File) {
   return (
     <View>
