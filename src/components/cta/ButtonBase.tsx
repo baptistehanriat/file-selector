@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { CSSProperties } from "styled-components";
-import { PrettyColors } from "../style/PrettyColors";
 
 export default function ButtonBase(props: ButtonBaseProps) {
   const disabled = props.status === "disabled";

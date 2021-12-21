@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { PrettyColors } from "../style/PrettyColors";
+import { PrettyColors } from "../style/colors";
 import ButtonBase, { ButtonBaseProps } from "./ButtonBase";
 
 export default function ButtonPrimary(props: ButtonBaseProps) {
