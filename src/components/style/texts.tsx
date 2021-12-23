@@ -21,3 +21,21 @@ export const P1 = styled.p`
   letter-spacing: 0.2px;
   color: ${PrettyColors.GreyDark};
 `;
+
+export const FileSelectorTitle = styled(H1)`
+  margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+`;
+
+export const FileSelectorItem = styled(P1)`
+  margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+`;

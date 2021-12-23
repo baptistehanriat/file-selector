@@ -2,7 +2,7 @@ import { MdCheckCircle } from "react-icons/md";
 import Clickable from "../../cta/Clickable";
 import View from "../../layout/View";
 import { PrettyColors } from "../../style/colors";
-import { P1 } from "../../style/texts";
+import { FileSelectorItem, P1 } from "../../style/texts";
 import { File } from "../types";
 
 export default function FileItem(props: FileItemProps) {
@@ -30,7 +30,7 @@ export default function FileItem(props: FileItemProps) {
           alt={props.file.name}
         />
       </View>
-      <P1 style={{ marginLeft: 10 }}>{props.file.name}</P1>
+      <FileSelectorItem>{props.file.name}</FileSelectorItem>
       {props.selectedFiles.includes(props.file) && (
         <View style={{ flex: 1, alignItems: "flex-end" }}>
           <MdCheckCircle size={24} color={PrettyColors.PrimaryDark} />

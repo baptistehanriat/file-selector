@@ -29,6 +29,7 @@ export default function FileSelector(props: FileSelectorProps) {
 
   function handleClose() {
     props.handleClose();
+    setHistory([]);
     setCurrentFolder(props.rootFolder);
   }
 
