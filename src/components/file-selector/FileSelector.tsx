@@ -10,6 +10,7 @@ import { Folder, File } from "./types";
 export default function FileSelector(props: FileSelectorProps) {
   const [currentFolder, setCurrentFolder] = useState<Folder>(props.rootFolder);
   const [history, setHistory] = useState<Folder[]>([]);
+  const [newSelection, setNewSelection] = useState<File[]>(props.selection);
 
   function handleBackwardNavigation() {
     history.splice(-1);
@@ -31,33 +32,54 @@ export default function FileSelector(props: FileSelectorProps) {
     setCurrentFolder(props.rootFolder);
   }
 
+  function handleAbort() {
+    setNewSelection(props.selection);
+    handleClose();
+  }
+
+  function saveSelection() {
+    props.saveSelection(newSelection);
+    handleClose();
+  }
+
+  function handleSelection(file: File) {
+    if (newSelection.includes(file)) {
+      const updatedSelection = newSelection.filter(
+        (item) => item.id !== file.id
+      );
+      setNewSelection(updatedSelection);
+    } else {
+      const updatedSelection = [...newSelection, file];
+      setNewSelection(updatedSelection);
+    }
+  }
+
   return (
     <Modal open={props.open} onClose={handleClose} hideBackdrop={true}>
       <ModalContentContainer>
         <FlexView>
           <TreeHeader
             handleBackwardNavigation={handleBackwardNavigation}
-            handleClose={handleClose}
+            handleClose={handleAbort}
             folder={currentFolder}
             isRoot={currentFolder.id === props.rootFolder.id}
           />
           <Tree
             onFolderSelection={handleForwardNavigation}
-            onFileSelection={props.handleSelection}
+            onFileSelection={handleSelection}
             folder={currentFolder}
-            selectedFiles={props.selectedFiles}
+            selectedFiles={newSelection}
           />
-          {props.count > 0 ? (
+          {newSelection.length > 0 ? (
             <ButtonPrimary
               style={{ alignSelf: "flex-end" }}
-              onClick={props.handleClose}
-              label={`Select ${props.count} file(s)`}
+              onClick={saveSelection}
+              label={`Select ${newSelection.length} file(s)`}
             />
           ) : (
             <ButtonPrimary
               status="disabled"
               style={{ alignSelf: "flex-end" }}
-              onClick={props.handleClose}
               label="Select files"
             />
           )}
@@ -71,9 +93,9 @@ interface FileSelectorProps {
   open: boolean;
   count: number;
   rootFolder: Folder;
-  selectedFiles: File[];
+  selection: File[];
   handleClose(): void;
-  handleSelection(file: File): void;
+  saveSelection(files: File[]): void;
 }
 
 const ModalContentContainer = styled(View)`

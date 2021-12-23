@@ -5,6 +5,7 @@ import ButtonPrimary from "./components/cta/ButtonPrimary";
 import FileSelector from "./components/file-selector/FileSelector";
 import { Folder, File } from "./components/file-selector/types";
 import View from "./components/layout/View";
+import { P1 } from "./components/style/texts";
 
 //TODO:
 // - [x] The Overlay can be triggered by different buttons and places within the app
@@ -12,15 +13,14 @@ import View from "./components/layout/View";
 // - [x] A folder can not be selected, as it navigates to a new folder
 // - [x] The arrow pointing to the left navigates to the parent folder of the current folder
 // - [x] The title shows the current Folder name
-// - The X aborts the folder and clears the selection
-// - Files can be selected across multiple folders
-// - The amount of files selected is shown within the button
+// - [x] The X aborts the folder and clears the selection
+// - [x] Files can be selected across multiple folders
+// - [x] The amount of files selected is shown within the button
 // - The list of folder and filters is scrollable, and starts below the Title and stops above the Button area
-// - Files and folder have the same hover and pressed states
-// - The Overlay should support to be opened with the selected items marked
-// - Clicking a file toggles adds and removes it from the selection.
-// - The list is updated with pressing the Add button
-
+// - [x] Files and folder have the same hover and pressed states
+// - [x] The Overlay should support to be opened with the selected items marked
+// - [x] Clicking a file toggles adds and removes it from the selection.
+// - [x] The list is updated with pressing the Add button
 // - filename should be cut if too long
 // - make view scrollable if too much content
 // - error view if data not properly fetch
@@ -53,16 +53,8 @@ function App() {
     setShowFileSelector(false);
   }
 
-  function handleFileSelection(file: File) {
-    if (selectedFiles.includes(file)) {
-      const updatedSelectedFiles = selectedFiles.filter(
-        (item) => item.id !== file.id
-      );
-      setSelectedFiles(updatedSelectedFiles);
-    } else {
-      const updatedSelectedFiles = [...selectedFiles, file];
-      setSelectedFiles(updatedSelectedFiles);
-    }
+  function saveSelection(files: File[]) {
+    setSelectedFiles(files);
   }
 
   return (
@@ -75,12 +67,16 @@ function App() {
         <FileSelector
           open={showFileSelector}
           handleClose={handleCloseFileSelector}
-          handleSelection={handleFileSelection}
-          selectedFiles={selectedFiles}
+          selection={selectedFiles}
           count={selectedFiles.length}
           rootFolder={rootFolder}
+          saveSelection={saveSelection}
         />
       )}
+      <P1>File Selected: {selectedFiles.length}</P1>
+      {selectedFiles.map((file) => {
+        return <P1 key={file.id}>{file.name}</P1>;
+      })}
     </Container>
   );
 }
