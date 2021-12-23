@@ -1,4 +1,3 @@
-import { Folder } from "@mui/icons-material";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -20,6 +19,24 @@ interface File {
   name: string;
   id: string;
 }
+
+//TODO:
+// - [x] The Overlay can be triggered by different buttons and places within the app
+// - [x] Disable or hide files that do not have the type JPG, PNG, PDF
+// - [x] A folder can not be selected, as it navigates to a new folder
+// - [x] The arrow pointing to the left navigates to the parent folder of the current folder
+// - [x] The title shows the current Folder name
+// - The X aborts the folder and clears the selection
+// - Files can be selected across multiple folders
+// - The amount of files selected is shown within the button
+// - The list of folder and filters is scrollable, and starts below the Title and stops above the Button area
+// - Files and folder have the same hover and pressed states
+// - The Overlay should support to be opened with the selected items marked
+// - Clicking a file toggles adds and removes it from the selection.
+// - The list is updated with pressing the Add button
+
+// - filename should be cut if too long
+// - make view scrollable if too much content
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -45,6 +62,7 @@ function App() {
       })
       .catch((error) => {
         // TODO: handle error
+        // Return error view
         console.log(error);
         return;
       });
@@ -99,7 +117,11 @@ function App() {
           </View>
 
           <FolderView folder={currentFolder!} onChange={handleChange} />
-          <ButtonPrimary onClick={handleCloseModal} label="Close" />
+          <ButtonPrimary
+            style={{ alignSelf: "flex-end" }}
+            onClick={handleCloseModal}
+            label="Close"
+          />
         </View>
       </Modal>
     </View>
@@ -111,7 +133,7 @@ function FolderView(props: {
   onChange: (selectedFolder: Folder, currentFolder: Folder) => void;
 }) {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {props.folder?.folders.map((folder) => {
         return (
           <Selector
@@ -128,10 +150,25 @@ function FolderView(props: {
         );
       })}
       {props.folder?.files.map((file) => {
-        return <FileView key={file.id} {...file} />;
+        return (
+          isValidFileFormat(file.name) && <FileView key={file.id} {...file} />
+        );
       })}
     </View>
   );
+}
+
+function isValidFileFormat(filename: string) {
+  switch (filename.slice(-3)) {
+    case "pdf":
+      return true;
+    case "png":
+      return true;
+    case "jpg":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function FileView(file: File) {
