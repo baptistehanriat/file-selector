@@ -5,7 +5,7 @@ import FlexView from "../layout/FlexView";
 import View from "../layout/View";
 import Tree from "./components/Tree";
 import TreeHeader from "./components/TreeHeader";
-import { Folder } from "./types";
+import { Folder, File } from "./types";
 
 export default function FileSelector(props: FileSelectorProps) {
   const [currentFolder, setCurrentFolder] = useState<Folder>(props.rootFolder);
@@ -21,17 +21,16 @@ export default function FileSelector(props: FileSelectorProps) {
     }
   }
 
-  function handleFileSelection() {}
-
   function handleForwardNavigation(selectedFolder: Folder) {
     setCurrentFolder(selectedFolder);
-    setHistory([...history, selectedFolder]); // doesn't update at the same time as outside function
+    setHistory([...history, selectedFolder]);
   }
 
   function handleClose() {
     props.handleClose();
     setCurrentFolder(props.rootFolder);
   }
+
   return (
     <Modal open={props.open} onClose={handleClose} hideBackdrop={true}>
       <ModalContentContainer>
@@ -44,14 +43,24 @@ export default function FileSelector(props: FileSelectorProps) {
           />
           <Tree
             onFolderSelection={handleForwardNavigation}
-            onFileSelection={handleFileSelection}
+            onFileSelection={props.handleSelection}
             folder={currentFolder}
+            selectedFiles={props.selectedFiles}
           />
-          <ButtonPrimary
-            style={{ alignSelf: "flex-end" }}
-            onClick={props.handleClose}
-            label="Close"
-          />
+          {props.count > 0 ? (
+            <ButtonPrimary
+              style={{ alignSelf: "flex-end" }}
+              onClick={props.handleClose}
+              label={`Select ${props.count} file(s)`}
+            />
+          ) : (
+            <ButtonPrimary
+              status="disabled"
+              style={{ alignSelf: "flex-end" }}
+              onClick={props.handleClose}
+              label="Select files"
+            />
+          )}
         </FlexView>
       </ModalContentContainer>
     </Modal>
@@ -60,8 +69,11 @@ export default function FileSelector(props: FileSelectorProps) {
 
 interface FileSelectorProps {
   open: boolean;
+  count: number;
   rootFolder: Folder;
+  selectedFiles: File[];
   handleClose(): void;
+  handleSelection(file: File): void;
 }
 
 const ModalContentContainer = styled(View)`

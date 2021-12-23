@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import Clickable from "../../cta/Clickable";
 import View from "../../layout/View";
@@ -7,12 +6,10 @@ import { P1 } from "../../style/texts";
 import { File } from "../types";
 
 export default function FileItem(props: FileItemProps) {
-  const [isSelected, setIsSelected] = useState(false);
   return (
     <Clickable
       onClick={() => {
-        setIsSelected(!isSelected);
-        props.onSelection(props.file.name);
+        props.onSelection(props.file);
       }}
     >
       <View
@@ -34,7 +31,7 @@ export default function FileItem(props: FileItemProps) {
         />
       </View>
       <P1 style={{ marginLeft: 10 }}>{props.file.name}</P1>
-      {isSelected && (
+      {props.selectedFiles.includes(props.file) && (
         <View style={{ flex: 1, alignItems: "flex-end" }}>
           <MdCheckCircle size={24} color={PrettyColors.PrimaryDark} />
         </View>
@@ -45,5 +42,6 @@ export default function FileItem(props: FileItemProps) {
 
 interface FileItemProps {
   file: File;
-  onSelection: (fileName: string) => void;
+  selectedFiles: File[];
+  onSelection(file: File): void;
 }

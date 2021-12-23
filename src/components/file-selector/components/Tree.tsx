@@ -2,6 +2,7 @@ import FlexView from "../../layout/FlexView";
 import { Folder } from "../types";
 import FileItem from "./FileItem";
 import FolderItem from "./FolderItem";
+import { File } from "../types";
 
 export default function Tree(props: TreeProps) {
   return (
@@ -19,6 +20,7 @@ export default function Tree(props: TreeProps) {
         return (
           isValidFileFormat(file.name) && (
             <FileItem
+              selectedFiles={props.selectedFiles}
               key={file.id}
               file={file}
               onSelection={props.onFileSelection}
@@ -45,6 +47,7 @@ function isValidFileFormat(filename: string) {
 
 interface TreeProps {
   folder: Folder;
+  selectedFiles: File[];
   onFolderSelection(selectedFolder: Folder): void;
-  onFileSelection: (fileName: string) => void;
+  onFileSelection(file: File): void;
 }

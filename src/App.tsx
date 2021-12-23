@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ButtonPrimary from "./components/cta/ButtonPrimary";
 import FileSelector from "./components/file-selector/FileSelector";
-import { Folder } from "./components/file-selector/types";
+import { Folder, File } from "./components/file-selector/types";
 import View from "./components/layout/View";
 
 //TODO:
@@ -30,7 +30,7 @@ function App() {
 
   const [showFileSelector, setShowFileSelector] = useState(false);
   const [rootFolder, setRootFolder] = useState<Folder>();
-  // const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [fetchStatus, setFetchStatus] = useState<
     "loading" | "success" | "error"
   >("loading");
@@ -49,11 +49,22 @@ function App() {
       });
   }, []);
 
-  const handleCloseFileSelector = () => {
+  function handleCloseFileSelector() {
     setShowFileSelector(false);
-  };
+  }
 
-  console.log("App.rootFolder", rootFolder);
+  function handleFileSelection(file: File) {
+    if (selectedFiles.includes(file)) {
+      const updatedSelectedFiles = selectedFiles.filter(
+        (item) => item.id !== file.id
+      );
+      setSelectedFiles(updatedSelectedFiles);
+    } else {
+      const updatedSelectedFiles = [...selectedFiles, file];
+      setSelectedFiles(updatedSelectedFiles);
+    }
+  }
+
   return (
     <Container>
       <ButtonPrimary
@@ -64,6 +75,9 @@ function App() {
         <FileSelector
           open={showFileSelector}
           handleClose={handleCloseFileSelector}
+          handleSelection={handleFileSelection}
+          selectedFiles={selectedFiles}
+          count={selectedFiles.length}
           rootFolder={rootFolder}
         />
       )}
