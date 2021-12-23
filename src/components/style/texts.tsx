@@ -8,6 +8,7 @@ export const H1 = styled.h4`
   font-size: 20px;
   line-height: 24px;
   letter-spacing: -0.4px;
+  margin: 0;
   color: ${PrettyColors.Dark};
 `;
 
