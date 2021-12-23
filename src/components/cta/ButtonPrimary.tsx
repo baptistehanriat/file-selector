@@ -5,14 +5,13 @@ import ButtonBase, { ButtonBaseProps } from "./ButtonBase";
 
 export default function ButtonPrimary(props: ButtonBaseProps) {
   if (props.status === "disabled") {
-    return <ButtonPrimaryDisabled {...props} />;
+    return <ButtonPrimaryDisabled {...props} labelColor={PrettyColors.Grey} />;
   } else {
-    return <ButtonPrimaryActive {...props} />;
+    return <ButtonPrimaryActive {...props} labelColor={PrettyColors.White} />;
   }
 }
 
 const ButtonPrimaryActive = styled(ButtonBase)`
-  color: ${PrettyColors.White};
   background-color: ${PrettyColors.Primary};
   :hover {
     background-color: ${PrettyColors.PrimaryDark};
@@ -20,7 +19,6 @@ const ButtonPrimaryActive = styled(ButtonBase)`
 `;
 
 const ButtonPrimaryDisabled = styled(ButtonBase)`
-  color: ${PrettyColors.Grey};
   background-color: ${PrettyColors.GreyLight};
   border: 1px solid ${PrettyColors.Grey};
 `;

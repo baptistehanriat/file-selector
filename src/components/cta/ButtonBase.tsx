@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { CSSProperties } from "styled-components";
+import { P1 } from "../style/texts";
 
 export default function ButtonBase(props: ButtonBaseProps) {
   const disabled = props.status === "disabled";
@@ -10,13 +11,14 @@ export default function ButtonBase(props: ButtonBaseProps) {
       onClick={props.onClick}
       {...props}
     >
-      {props.label}
+      <P1 style={{ color: props.labelColor }}>{props.label}</P1>
     </ButtonBaseStyled>
   );
 }
 
 export interface ButtonBaseProps {
   label?: string;
+  labelColor?: string;
   onClick?(): void;
   status?: "enabled" | "disabled";
   style?: CSSProperties;
