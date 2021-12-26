@@ -30,9 +30,8 @@ function App() {
   const [showFileSelector, setShowFileSelector] = useState(false);
   const [rootFolder, setRootFolder] = useState<Folder>();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [fetchStatus, setFetchStatus] = useState<
-    "loading" | "success" | "error"
-  >("loading");
+  // const [fetchStatus, setFetchStatus] = useState<
+  // "loading" | "success" | ("error" > "loading");
 
   useEffect(() => {
     axios
@@ -40,11 +39,9 @@ function App() {
       .then((response) => {
         console.log(response.data);
         setRootFolder(response.data);
-        setFetchStatus("success");
       })
       .catch((error) => {
         console.log(error);
-        setFetchStatus("error");
       });
   }, []);
 
