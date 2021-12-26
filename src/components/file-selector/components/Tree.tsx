@@ -17,7 +17,7 @@ export default function Tree(props: TreeProps) {
       })}
       {props.folder?.files.map((file) => {
         return (
-          isValidFileFormat(file.name) && (
+          isValidFileFormat(file.mimeType) && (
             <FileItem
               selectedFiles={props.selectedFiles}
               key={file.id}
@@ -31,13 +31,13 @@ export default function Tree(props: TreeProps) {
   );
 }
 
-function isValidFileFormat(filename: string) {
-  switch (filename.slice(-3)) {
+function isValidFileFormat(fileFormat: string) {
+  switch (fileFormat.split("/").slice(-1)[0]) {
     case "pdf":
       return true;
     case "png":
       return true;
-    case "jpg":
+    case "jpeg":
       return true;
     default:
       return false;
