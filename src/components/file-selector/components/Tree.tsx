@@ -1,12 +1,11 @@
 import FlexView from "../../layout/FlexView";
-import { Folder } from "../types";
+import { File, Folder } from "../types";
 import FileItem from "./FileItem";
 import FolderItem from "./FolderItem";
-import { File } from "../types";
 
 export default function Tree(props: TreeProps) {
   return (
-    <FlexView>
+    <FlexView style={{ overflowY: "scroll" }}>
       {props.folder?.folders.map((folder) => {
         return (
           <FolderItem

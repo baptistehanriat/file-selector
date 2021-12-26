@@ -22,7 +22,7 @@ export const P1 = styled.p`
   color: ${PrettyColors.GreyDark};
 `;
 
-export const FileSelectorTitle = styled(H1)`
+export const H1Clamped = styled(H1)`
   margin-left: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -31,7 +31,7 @@ export const FileSelectorTitle = styled(H1)`
   -webkit-box-orient: vertical;
 `;
 
-export const FileSelectorItem = styled(P1)`
+export const P1Clamped = styled(P1)`
   margin-left: 10px;
   overflow: hidden;
   text-overflow: ellipsis;

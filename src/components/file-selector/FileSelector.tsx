@@ -5,14 +5,14 @@ import FlexView from "../layout/FlexView";
 import View from "../layout/View";
 import Tree from "./components/Tree";
 import TreeHeader from "./components/TreeHeader";
-import { Folder, File } from "./types";
+import { File, Folder } from "./types";
 
 export default function FileSelector(props: FileSelectorProps) {
   const [currentFolder, setCurrentFolder] = useState<Folder>(props.rootFolder);
   const [history, setHistory] = useState<Folder[]>([]);
   const [newSelection, setNewSelection] = useState<File[]>(props.selection);
 
-  function handleBackwardNavigation() {
+  function onBackwardNavigation() {
     history.splice(-1);
     if (history.length > 0) {
       setHistory(history);
@@ -22,28 +22,28 @@ export default function FileSelector(props: FileSelectorProps) {
     }
   }
 
-  function handleForwardNavigation(selectedFolder: Folder) {
+  function onForwardNavigation(selectedFolder: Folder) {
     setCurrentFolder(selectedFolder);
     setHistory([...history, selectedFolder]);
   }
 
-  function handleClose() {
-    props.handleClose();
+  function onClose() {
+    props.onClose();
     setHistory([]);
     setCurrentFolder(props.rootFolder);
   }
 
-  function handleAbort() {
+  function onAbort() {
     setNewSelection(props.selection);
-    handleClose();
+    onClose();
   }
 
   function saveSelection() {
     props.saveSelection(newSelection);
-    handleClose();
+    onClose();
   }
 
-  function handleSelection(file: File) {
+  function onFileSelection(file: File) {
     if (newSelection.includes(file)) {
       const updatedSelection = newSelection.filter(
         (item) => item.id !== file.id
@@ -56,18 +56,18 @@ export default function FileSelector(props: FileSelectorProps) {
   }
 
   return (
-    <Modal open={props.open} onClose={handleClose} hideBackdrop={true}>
+    <Modal open={props.open} onClose={onClose} hideBackdrop={true}>
       <ModalContentContainer>
         <FlexView>
           <TreeHeader
-            handleBackwardNavigation={handleBackwardNavigation}
-            handleClose={handleAbort}
+            onBackwardNavigation={onBackwardNavigation}
+            onClose={onAbort}
             folder={currentFolder}
             isRoot={currentFolder.id === props.rootFolder.id}
           />
           <Tree
-            onFolderSelection={handleForwardNavigation}
-            onFileSelection={handleSelection}
+            onFolderSelection={onForwardNavigation}
+            onFileSelection={onFileSelection}
             folder={currentFolder}
             selectedFiles={newSelection}
           />
@@ -95,7 +95,7 @@ interface FileSelectorProps {
   count: number;
   rootFolder: Folder;
   selection: File[];
-  handleClose(): void;
+  onClose(): void;
   saveSelection(files: File[]): void;
 }
 

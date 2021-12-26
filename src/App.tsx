@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ButtonPrimary from "./components/cta/ButtonPrimary";
 import FileSelector from "./components/file-selector/FileSelector";
-import { Folder, File } from "./components/file-selector/types";
+import { File, Folder } from "./components/file-selector/types";
+import FlexView from "./components/layout/FlexView";
 import View from "./components/layout/View";
-import { P1 } from "./components/style/texts";
+import { P1, P1Clamped } from "./components/style/texts";
 
 //TODO:
 // - [x] The Overlay can be triggered by different buttons and places within the app
@@ -16,14 +17,12 @@ import { P1 } from "./components/style/texts";
 // - [x] The X aborts the folder and clears the selection
 // - [x] Files can be selected across multiple folders
 // - [x] The amount of files selected is shown within the button
-// - The list of folder and filters is scrollable, and starts below the Title and stops above the Button area
+// - [x] The list of folder and filters is scrollable, and starts below the Title and stops above the Button area
 // - [x] Files and folder have the same hover and pressed states
 // - [x] The Overlay should support to be opened with the selected items marked
 // - [x] Clicking a file toggles adds and removes it from the selection.
 // - [x] The list is updated with pressing the Add button
-// - filename should be cut if too long
-// - make view scrollable if too much content
-// - error view if data not properly fetch
+// - [x] Filename should be cut if too long
 
 function App() {
   const dataUrl = "https://api-dev.reo.so/api/folderStructure";
@@ -49,7 +48,7 @@ function App() {
       });
   }, []);
 
-  function handleCloseFileSelector() {
+  function onCloseFileSelector() {
     setShowFileSelector(false);
   }
 
@@ -66,17 +65,30 @@ function App() {
       {rootFolder && (
         <FileSelector
           open={showFileSelector}
-          handleClose={handleCloseFileSelector}
+          onClose={onCloseFileSelector}
           selection={selectedFiles}
           count={selectedFiles.length}
           rootFolder={rootFolder}
           saveSelection={saveSelection}
         />
       )}
-      <P1>File Selected: {selectedFiles.length}</P1>
-      {selectedFiles.map((file) => {
-        return <P1 key={file.id}>{file.name}</P1>;
-      })}
+      <FlexView
+        style={{
+          width: "25%",
+          marginTop: 20,
+        }}
+      >
+        <P1 style={{ fontWeight: "bold" }}>
+          File selected: {selectedFiles.length}
+        </P1>
+        {selectedFiles.map((file) => {
+          return (
+            <P1Clamped style={{ margin: "0px 0px 10px 0px" }} key={file.id}>
+              {file.name}
+            </P1Clamped>
+          );
+        })}
+      </FlexView>
     </Container>
   );
 }

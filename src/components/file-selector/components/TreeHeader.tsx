@@ -1,10 +1,9 @@
 import { MdChevronLeft, MdClose } from "react-icons/md";
-import styled from "styled-components";
 import Clickable from "../../cta/Clickable";
 import FlexView from "../../layout/FlexView";
 import View from "../../layout/View";
 import { PrettyColors } from "../../style/colors";
-import { FileSelectorTitle, H1 } from "../../style/texts";
+import { H1Clamped } from "../../style/texts";
 import { Folder } from "../types";
 
 export default function TreeHeader(props: TreeHeaderProps) {
@@ -17,13 +16,13 @@ export default function TreeHeader(props: TreeHeaderProps) {
       }}
     >
       {props.isRoot ? (
-        <FileSelectorTitle>Project title</FileSelectorTitle>
+        <H1Clamped>Project title</H1Clamped>
       ) : (
         <>
-          <Clickable onClick={props.handleBackwardNavigation}>
+          <Clickable onClick={props.onBackwardNavigation}>
             <MdChevronLeft color={PrettyColors.GreyDark} size={24} />
           </Clickable>
-          <FileSelectorTitle>{props.folder.name}</FileSelectorTitle>
+          <H1Clamped>{props.folder.name}</H1Clamped>
         </>
       )}
       <FlexView
@@ -31,7 +30,7 @@ export default function TreeHeader(props: TreeHeaderProps) {
           alignItems: "flex-end",
         }}
       >
-        <Clickable onClick={props.handleClose}>
+        <Clickable onClick={props.onClose}>
           <MdClose color={PrettyColors.GreyDark} size={24} />
         </Clickable>
       </FlexView>
@@ -42,6 +41,6 @@ export default function TreeHeader(props: TreeHeaderProps) {
 interface TreeHeaderProps {
   isRoot: boolean;
   folder: Folder;
-  handleBackwardNavigation(): void;
-  handleClose(): void;
+  onBackwardNavigation(): void;
+  onClose(): void;
 }
